@@ -17,6 +17,18 @@ export class AppService {
         }
       ]
     })
+    this.producerService.produce({
+      topic: 'born',
+      messages: [
+        {
+          value: JSON.stringify({
+            account_type: '1',
+            amount: 200,
+            payment_type: 'withdraw'
+          }),
+        }
+      ]
+    })
     return 'Hello World!';
   }
 }

@@ -7,7 +7,7 @@ export class WithdrawController {
     constructor(private readonly withdrawService: WithdrawService) { }
 
     @Get('/')
-    checkUser(@Body() withdrawRequest: WithdrawRequest) {
-        return this.withdrawService.checkUser(withdrawRequest);
+    checkUserWithdraw(@Body() withdrawRequest: WithdrawRequest) {
+        return this.withdrawService.checkUserWithdraw(withdrawRequest);
     }
 }

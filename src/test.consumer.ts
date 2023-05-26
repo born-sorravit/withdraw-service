@@ -8,14 +8,18 @@ export class TestConsumer implements OnModuleInit {
 
     async onModuleInit() {
         await this.consumerService.consume(
-            { topics: ["test-kafka"] },
+            { topics: ["test-kafka", 'born'] },
             {
                 eachMessage: async ({ topic, partition, message }) => {
-                    console.log({
-                        value: formatJSON(message.value),
-                        topic: topic.toString(),
-                        partition: partition.toString()
-                    });
+                    if (topic !== 'born') {
+                        return console.log({
+                            value: formatJSON(message.value),
+                            topic: topic.toString(),
+                            partition: partition.toString()
+                        });
+                    } else {
+                        return console.log('Hello born');
+                    }
                 }
             }
         )

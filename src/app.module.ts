@@ -10,6 +10,7 @@ import { WithdrawModule } from './withdraw/withdraw.module';
 @Module({
   imports: [
     KafkaModule,
+    WithdrawModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -27,7 +28,6 @@ import { WithdrawModule } from './withdraw/withdraw.module';
     ConfigModule.forRoot({
       envFilePath: [`.env`]
     }),
-    WithdrawModule
   ],
   controllers: [AppController],
   providers: [AppService, TestConsumer],

@@ -1,22 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { ProducerService } from 'src/kafka/producer.service';
+import { WithdrawOrderEvent } from './event/withdraw-order.event';
 import { WithdrawRequest } from './request/withdraw-request.dto';
+import { WithdrawRepository } from './withdraw.repository';
 
 @Injectable()
 export class WithdrawService {
-    constructor(private readonly producerService: ProducerService) { }
-    async checkUser(withdrawRequest: WithdrawRequest) {
-        return this.producerService.produce({
-            topic: 'account_check_user',
-            messages: [
-                {
-                    value: JSON.stringify({
-                        account_number: withdrawRequest.account_number,
-                        amount: withdrawRequest.amount,
-                        payment_type: withdrawRequest.transaction_type
-                    }),
-                }
-            ]
-        })
+    constructor(
+        private readonly withdrawRepository: WithdrawRepository
+    ) { }
+    async checkUserWithdraw(withdrawRequest: WithdrawRequest) {
+        await this.withdrawRepository.checkUserAccount(withdrawRequest)
+    }
+
+    async createWithdraw(withdrawOrderEvent: WithdrawOrderEvent) {
+        const withdraw = await this.withdrawRepository.createWithdrawOrder(withdrawOrderEvent)
+    }
+
+    async withdrawSuccess(withdrawOrderEvent: WithdrawOrderEvent) {
+        return `UserId : ${withdrawOrderEvent.account_number} => Withdraw success | Your balance is ${withdrawOrderEvent.balance}`
     }
 }
