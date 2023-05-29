@@ -22,7 +22,7 @@ export class WithdrawRepository extends Repository<Withdraw> {
             messages: [
                 {
                     value: JSON.stringify({
-                        account_number: withdrawRequest.account_number,
+                        account_number: withdrawRequest.account_number.toString(),
                         amount: withdrawRequest.amount,
                         payment_type: withdrawRequest.transaction_type
                     }),
@@ -31,15 +31,29 @@ export class WithdrawRepository extends Repository<Withdraw> {
         })
     }
 
-    async createWithdrawOrder(withdrawOrderEvent: WithdrawOrderEvent) {
+    async createWithdrawOrder(withdrawOrderEvent: any) {
         try {
+            let newBalance;
+            let accountNumber;
+            let balance;
+            console.log("withdrawOrderEvent : ", withdrawOrderEvent);
 
-            const newBalance = Number(withdrawOrderEvent.balance) - Number(withdrawOrderEvent.amount);
+            if (withdrawOrderEvent.payment_type === 'transfer') {
+                let account;
+                account = withdrawOrderEvent.balance.filter((accountId) => accountId.account_number === withdrawOrderEvent.from_account_number)
+                accountNumber = account[0].account_number;
+                balance = account[0].balance
+                newBalance = balance - Number(withdrawOrderEvent.amount);
+            } else {
+                accountNumber = withdrawOrderEvent.account_number;
+                balance = withdrawOrderEvent.balance;
+                newBalance = Number(withdrawOrderEvent.balance) - Number(withdrawOrderEvent.amount);
+            }
             if (newBalance >= 0) {
                 const withdrawOrder = await this.withdrawRepository.create({
-                    accountNumber: withdrawOrderEvent.account_number,
-                    transactionType: withdrawOrderEvent.transaction_type,
-                    oldBalance: withdrawOrderEvent.balance,
+                    accountNumber: accountNumber,
+                    transactionType: withdrawOrderEvent.payment_type,
+                    oldBalance: balance,
                     withdrawAmount: withdrawOrderEvent.amount,
                     newBalance: newBalance.toString()
                 })
@@ -49,16 +63,17 @@ export class WithdrawRepository extends Repository<Withdraw> {
                     messages: [
                         {
                             value: JSON.stringify({
-                                account_number: withdrawOrderEvent.account_number,
-                                old_balance: withdrawOrderEvent.balance,
+                                account_number: accountNumber,
+                                old_balance: balance,
                                 amount: withdrawOrderEvent.amount,
                                 new_balance: newBalance,
-                                payment_type: withdrawOrderEvent.transaction_type
+                                payment_type: withdrawOrderEvent.payment_type
                             }),
                         }
                     ]
                 })
             }
+
         } catch (error) {
             console.log(error);
         }

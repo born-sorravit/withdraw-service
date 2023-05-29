@@ -11,8 +11,8 @@ export class Withdraw {
     @Generated('uuid')
     uuid: string;
 
-    @Column({ name: 'account_number', nullable: false, default: '' })
-    accountNumber: string;
+    @Column({ name: 'account_number', nullable: false, })
+    accountNumber: number;
 
     @Column({ name: 'transaction_type', nullable: false, default: '' })
     transactionType: string;

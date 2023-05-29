@@ -18,6 +18,8 @@ export class WithdrawService {
     }
 
     async withdrawSuccess(withdrawOrderEvent: WithdrawOrderEvent) {
-        return `UserId : ${withdrawOrderEvent.account_number} => Withdraw success | Your balance is ${withdrawOrderEvent.balance}`
+        console.log("success");
+
+        console.log(`UserId : ${withdrawOrderEvent.account_number} => Withdraw success`);
     }
 }
