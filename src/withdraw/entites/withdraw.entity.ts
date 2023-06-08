@@ -25,4 +25,7 @@ export class Withdraw {
 
     @Column({ name: 'new_balance', nullable: false, default: 0 })
     newBalance: string;
+
+    @Column({ type: 'uuid', name: 'transaction_id', nullable: false })
+    transactionId: string;
 }

@@ -13,13 +13,15 @@ export class WithdrawService {
         await this.withdrawRepository.checkUserAccount(withdrawRequest)
     }
 
-    async createWithdraw(withdrawOrderEvent: WithdrawOrderEvent) {
+    async createWithdraw(withdrawOrderEvent: any) {
         const withdraw = await this.withdrawRepository.createWithdrawOrder(withdrawOrderEvent)
     }
 
     async withdrawSuccess(withdrawOrderEvent: WithdrawOrderEvent) {
-        console.log("success");
-
         console.log(`UserId : ${withdrawOrderEvent.account_number} => Withdraw success`);
+    }
+
+    async withdrawFailed(data: any) {
+        const withdraw = await this.withdrawRepository.deleteWithdrawOrder(data)
     }
 }
